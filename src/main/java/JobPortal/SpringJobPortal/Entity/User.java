@@ -2,11 +2,9 @@ package JobPortal.SpringJobPortal.Entity;
 
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.engine.internal.Cascade;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -32,13 +31,22 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private RoleType roles;
+    private RoleType role;
 
     @Column(nullable = false)
     private Boolean isActive;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToOne(mappedBy = "user")
+    private CandidateProfile candidateProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private RecruiterProfile recruiterProfile;
+
+
+
 
 
 }
