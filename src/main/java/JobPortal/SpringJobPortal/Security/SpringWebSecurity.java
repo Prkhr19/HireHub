@@ -1,11 +1,15 @@
 package JobPortal.SpringJobPortal.Security;
 
+import JobPortal.SpringJobPortal.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SpringWebSecurity {
+    private final UserRepository userRepository;
     private final JwtAuthenticationFilterChain jwtAuthenticationFilterChain;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -25,9 +30,11 @@ public class SpringWebSecurity {
                 .httpBasic(basic -> basic.disable())
 
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/candidate/**").hasRole("CANDIDATE")
+                        .requestMatchers( "/jobs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/jobs/*/apply").hasRole("CANDIDATE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/recruiter/**").hasRole("RECRUITER")
+                        .requestMatchers(HttpMethod.PUT,"/candidate/profile").hasRole("CANDIDATE")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);
@@ -37,8 +44,5 @@ public class SpringWebSecurity {
 
 
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 }

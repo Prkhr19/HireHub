@@ -2,11 +2,15 @@ package JobPortal.SpringJobPortal.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CandidateProfile {
 
     @Id
@@ -16,23 +20,23 @@ public class CandidateProfile {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String phoneNo;
 
     private String skills;
 
     private String resumeUrl;
 
-    @Column(nullable = false)
+    @Column
     private Long experience;
 
-    @Column(nullable = false)
+    @Column
     private String Education;
 
-    @Column(nullable = false)
+    @Column
     private String location;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

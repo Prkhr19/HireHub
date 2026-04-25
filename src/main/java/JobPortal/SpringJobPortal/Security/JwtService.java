@@ -1,14 +1,14 @@
 package JobPortal.SpringJobPortal.Security;
 
 import JobPortal.SpringJobPortal.Entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
@@ -44,12 +44,28 @@ public class JwtService {
 
     }
 
+    public Boolean isTokenExpired(String token){
+        Date expiry = extractAllCalims(token).getExpiration();
+
+        return expiry.before(new Date());
+
+    }
+    private Claims extractAllCalims(String token){
+        return Jwts.parser()
+                .verifyWith((SecretKey) getSigningkey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+
 
 
     public Boolean isTokenValid(String token, User user){
         String email = extractUserName(token);
         return email.equals(user.getEmail())
-                &&isToken
+                &&isTokenExpired(token)
+                &&user.getIsActive();
     }
 
 }

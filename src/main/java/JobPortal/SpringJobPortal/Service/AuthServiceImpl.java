@@ -3,9 +3,11 @@ package JobPortal.SpringJobPortal.Service;
 import JobPortal.SpringJobPortal.Dto.AuthResponseDto;
 import JobPortal.SpringJobPortal.Dto.LoginRequestDto;
 import JobPortal.SpringJobPortal.Dto.SignUpRequestDto;
+import JobPortal.SpringJobPortal.Entity.CandidateProfile;
 import JobPortal.SpringJobPortal.Entity.RecruiterProfile;
 import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
+import JobPortal.SpringJobPortal.Repository.CandidateProfileRepository;
 import JobPortal.SpringJobPortal.Repository.RecruiterProfileRepository;
 import JobPortal.SpringJobPortal.Repository.UserRepository;
 import JobPortal.SpringJobPortal.Security.JwtService;
@@ -27,12 +29,13 @@ public class AuthServiceImpl implements AuthServices {
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
     private final RecruiterProfileRepository recruiterProfileRepository;
+    private final CandidateProfileRepository candidateProfileRepository;
 
 
     @Override
     public AuthResponseDto signup(SignUpRequestDto signUpRequestDto) {
 
-        if (userRepository.existsByEmail(signUpRequestDto.getEmail())){
+        if (userRepository.existsByEmail(signUpRequestDto.getEmail())) {
             throw new BadCredentialsException("User with this email already exists.");
         }
 
@@ -44,19 +47,28 @@ public class AuthServiceImpl implements AuthServices {
                 .isActive(true)
                 .build();
 
-       User savedUser= userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-       if (savedUser.getRole() == RoleType.RECRUITER){
-           RecruiterProfile recruiterProfile = new RecruiterProfile();
+        if (savedUser.getRole() == RoleType.RECRUITER) {
+            RecruiterProfile recruiterProfile = new RecruiterProfile();
 
-           recruiterProfile.setFullName(savedUser.getName());
-           recruiterProfile.setDesignation("Recruiter");
-           recruiterProfile.setUser(savedUser);
+            recruiterProfile.setFullName(savedUser.getName());
+            recruiterProfile.setDesignation("Recruiter");
+            recruiterProfile.setUser(savedUser);
 
-           //recruiterProfile.setCompany(null);   // can assign later
-           recruiterProfileRepository.save(recruiterProfile);
+            //recruiterProfile.setCompany(null);   // can assign later
+            recruiterProfileRepository.save(recruiterProfile);
 
-       }
+        }
+        if (savedUser.getRole() == RoleType.CANDIDATE) {
+            CandidateProfile candidateProfile = new CandidateProfile();
+            candidateProfile.setUser(savedUser);
+            savedUser.setCandidateProfile(candidateProfile);
+            candidateProfile.setName(savedUser.getName());
+
+            candidateProfileRepository.save(candidateProfile);
+
+        }
 
 
         return AuthResponseDto.builder()
@@ -68,13 +80,13 @@ public class AuthServiceImpl implements AuthServices {
 
     @Override
     public AuthResponseDto logIn(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(()-> new BadCredentialsException("Invalid Credentials"));
+        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(() -> new BadCredentialsException("Invalid Credentials"));
 
-        if (!user.getIsActive()){
+        if (!user.getIsActive()) {
             throw new DisabledException("Invalid Credentials");
         }
 
-        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid Credentials");
         }
 

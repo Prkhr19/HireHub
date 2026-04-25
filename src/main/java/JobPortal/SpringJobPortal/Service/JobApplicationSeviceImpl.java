@@ -1,11 +1,11 @@
 package JobPortal.SpringJobPortal.Service;
 
+import JobPortal.SpringJobPortal.Dto.CandidateProfileReqDto;
 import JobPortal.SpringJobPortal.Entity.CandidateProfile;
 import JobPortal.SpringJobPortal.Entity.Job;
 import JobPortal.SpringJobPortal.Entity.JobApplication;
 import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
 import JobPortal.SpringJobPortal.Entity.type.JobStatus;
-import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import JobPortal.SpringJobPortal.Repository.JobRepository;
 import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
 import JobPortal.SpringJobPortal.Dto.JobApplicationRequestDto;
@@ -29,13 +29,15 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
     private final JobRepository jobRepository;
 
     @Override
-    public JobApplicationResponseDto applyJob(Long jobId, JobApplicationRequestDto jobApplicationRequestDto) {
+    public JobApplicationResponseDto applyJob(Long jobId) {
+
 
         User user = currentUserService.getCurrentUser();
 
-        if (user.getRole() != RoleType.CANDIDATE) {
-            throw new AccessDeniedException("Only candidates can apply foe jobs");
-        }
+
+//        if (user.getRole() != RoleType.CANDIDATE) {
+//            throw new AccessDeniedException("Only candidates can apply for jobs");
+//        }
 
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new EntityNotFoundException("Job not found with this id"));
 
@@ -44,10 +46,10 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
             throw new IllegalStateException("This job is now closed");
         }
 
-        CandidateProfile candidate = candidateProfileRepository.findByUser(user).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        CandidateProfile candidate = candidateProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (jobApplicationRepository.existsByCandidateAndJob(candidate, job)) {
-            throw new RuntimeException("User already applied for this job");
+            throw new AccessDeniedException("User already applied for this job");
         }
 
         JobApplication application = new JobApplication();
@@ -56,13 +58,15 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
         application.setStatus(ApplicationStatus.APPLIED);
 
         jobApplicationRepository.save(application);
+        System.out.println("before save");
 
         return JobApplicationResponseDto.builder()
-                .name(jobApplicationRequestDto.getName())
-                .message("Applied Successfuly")
+                .name(candidate.getName())
+                .message("Applied Successfully")
                 .status(ApplicationStatus.APPLIED)
                 .build();
 
 
     }
 }
+

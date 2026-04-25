@@ -11,18 +11,22 @@ import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import JobPortal.SpringJobPortal.Repository.JobRepository;
 import JobPortal.SpringJobPortal.Repository.RecruiterProfileRepository;
 import JobPortal.SpringJobPortal.Repository.UserRepository;
+import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
 import JobPortal.SpringJobPortal.Service.Impl.JobServices;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class JobServiceImpl implements JobServices {
     private final UserRepository userRepository;
     private final RecruiterProfileRepository recruiterProfileRepository;
     private final JobRepository jobRepository;
+    private final CurrentUserService currentUserService;
     //private final Company company;
    // private final RecruiterProfile recruiterProfile;
     private final ModelMapper modelMapper;
@@ -92,20 +97,38 @@ public class JobServiceImpl implements JobServices {
         return modelMapper.map(job, JobResponseDto.class);
     }
 
+    @Transactional
     @Override
     public JobResponseDto updateJob(Long id, JobRequestDto jobRequestDto) {
+        System.out.println("Entered updateJob");
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+       // User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = currentUserService.getCurrentUser();
+        System.out.println("2 Auth fetched");
+
+//        User user = userRepository.findByEmail(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        //User user = userRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("user name not found"));
+        System.out.println("User fetched");
+       Job job = jobRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("not found"));
+
+        //Job job = jobRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Job not found"));
+//        System.out.println("Job fetched");
 
 
-        Job job = jobRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Job not found"));
 
         RoleType role = user.getRole();
+        System.out.println(user.getRole());
+
         if (role == RoleType.ADMIN) {
             //admin can update any job
         } else if (role == RoleType.RECRUITER) {
-            RecruiterProfile currentRecruiter = user.getRecruiterProfile();
+            RecruiterProfile currentRecruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(()->new UsernameNotFoundException("User not exist"));
+            System.out.println(currentRecruiter.getId());
+
+            System.out.println(currentRecruiter.getId());
+
+            System.out.println(job.getRecruiter().getId());
+
             if (!job.getRecruiter().getId().equals(currentRecruiter.getId()))
                 throw new DisabledException("You can update only your jobs");
 
@@ -114,6 +137,7 @@ public class JobServiceImpl implements JobServices {
             throw new AccessDeniedException("Unauthorized access");
         }
 
+        System.out.println(job.getStatus());
 
         if (job.getStatus() != JobStatus.OPEN) throw new IllegalStateException("Cannot update this job");
 
@@ -131,7 +155,12 @@ public class JobServiceImpl implements JobServices {
         Job updated = jobRepository.save(job);
 
 
-        return modelMapper.map(updated, JobResponseDto.class);
+        return JobResponseDto.builder()
+                .message("Job updated successfully")
+                .status(JobStatus.OPEN.name())
+                .id(updated.getId())
+                .title(updated.getTitle())
+                .build();
     }
 
     @Override

@@ -26,12 +26,13 @@ public class JwtAuthenticationFilterChain extends OncePerRequestFilter {
 
     public final UserRepository userRepository;
     public final JwtService jwtService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -40,18 +41,25 @@ public class JwtAuthenticationFilterChain extends OncePerRequestFilter {
 
         String email = jwtService.extractUserName(jwtToken);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            User user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User not found"));
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     user,
                     null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                    user.getAuthorities()
 
             );
 
+
             SecurityContextHolder.getContext().setAuthentication(authToken);
-            filterChain.doFilter(request, response);
+            System.out.println(
+                    SecurityContextHolder.getContext()
+                            .getAuthentication()
+                            .getAuthorities()
+            );
         }
+        filterChain.doFilter(request, response);
+
     }
 
 

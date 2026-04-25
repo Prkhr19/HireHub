@@ -14,4 +14,5 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 public List<Job>findByStatus(JobStatus status);
 
 
+
 }

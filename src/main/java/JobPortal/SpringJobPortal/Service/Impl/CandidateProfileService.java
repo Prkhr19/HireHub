@@ -2,12 +2,10 @@ package JobPortal.SpringJobPortal.Service.Impl;
 
 import JobPortal.SpringJobPortal.Dto.CandidateProfileReqDto;
 import JobPortal.SpringJobPortal.Dto.JobApplicationRequestDto;
-import JobPortal.SpringJobPortal.Dto.JobApplicationResponseDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface JobApplicationSevice {
+public interface CandidateProfileService {
 
-    JobApplicationResponseDto applyJob(Long jobId);
-
+    public CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto);
 }
