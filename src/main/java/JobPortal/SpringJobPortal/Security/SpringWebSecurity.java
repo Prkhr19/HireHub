@@ -31,10 +31,12 @@ public class SpringWebSecurity {
 
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
                         .requestMatchers( "/jobs/**").permitAll()
+                        .requestMatchers("/jobs/{id}/patch").hasRole("RECRUITER")
+                        .requestMatchers("/jobs/*/applications").hasRole("RECRUITER")
                         .requestMatchers(HttpMethod.POST, "/jobs/*/apply").hasRole("CANDIDATE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/recruiter/**").hasRole("RECRUITER")
-                        .requestMatchers(HttpMethod.PUT,"/candidate/profile").hasRole("CANDIDATE")
+                        .requestMatchers(HttpMethod.PUT,"/candidate/**").hasRole("CANDIDATE")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);

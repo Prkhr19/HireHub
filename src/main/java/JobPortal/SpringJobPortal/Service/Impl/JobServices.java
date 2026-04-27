@@ -1,5 +1,7 @@
 package JobPortal.SpringJobPortal.Service.Impl;
 
+import JobPortal.SpringJobPortal.Dto.JobPatchRequestDto;
+import JobPortal.SpringJobPortal.Dto.JobPatchResponseDto;
 import JobPortal.SpringJobPortal.Dto.JobRequestDto;
 import JobPortal.SpringJobPortal.Dto.JobResponseDto;
 import jakarta.validation.Valid;
@@ -16,4 +18,8 @@ public interface JobServices {
     JobResponseDto updateJob(Long id, JobRequestDto jobRequestDto);
 
     JobResponseDto closeJob(Long id);
+
+    JobPatchResponseDto patchJob(Long id, JobPatchRequestDto jobPatchRequestDto);
+
+
 }

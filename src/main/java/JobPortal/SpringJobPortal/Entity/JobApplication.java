@@ -28,6 +28,7 @@ public class JobApplication {
     @Column(nullable = false)
     private ApplicationStatus status;
 
+
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime appliedAt;
@@ -39,5 +40,9 @@ public class JobApplication {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_Id", nullable = false)
     private Job job;
+
+    private Double appliedSalary;
+
+    private String appliedJobDescription;
 
 }

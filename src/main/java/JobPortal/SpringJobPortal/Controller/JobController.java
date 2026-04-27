@@ -1,5 +1,7 @@
 package JobPortal.SpringJobPortal.Controller;
 
+import JobPortal.SpringJobPortal.Dto.JobPatchRequestDto;
+import JobPortal.SpringJobPortal.Dto.JobPatchResponseDto;
 import JobPortal.SpringJobPortal.Dto.JobRequestDto;
 import JobPortal.SpringJobPortal.Dto.JobResponseDto;
 import JobPortal.SpringJobPortal.Repository.JobRepository;
@@ -50,6 +52,12 @@ public class JobController {
         JobResponseDto close = jobService.closeJob(id);
 
         return ResponseEntity.ok(close);
+    }
+
+    @PatchMapping("/jobs/{id}/patch")
+    public ResponseEntity<JobPatchResponseDto> updatesal(@PathVariable Long id , @RequestBody JobPatchRequestDto jobPatchRequestDto){
+        JobPatchResponseDto response = jobService.patchJob(id, jobPatchRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 

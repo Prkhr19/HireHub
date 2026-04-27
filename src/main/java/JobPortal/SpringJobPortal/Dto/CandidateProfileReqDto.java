@@ -30,7 +30,7 @@ public class CandidateProfileReqDto {
 
     @NotNull
     @Positive
-    private Long experience;
+    private Double experience;
 
     @NotBlank
     private String education;

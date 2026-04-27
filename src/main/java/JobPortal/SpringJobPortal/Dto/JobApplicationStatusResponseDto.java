@@ -1,18 +1,18 @@
 package JobPortal.SpringJobPortal.Dto;
 
 import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
-import lombok.*;
+import JobPortal.SpringJobPortal.Entity.type.JobStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Builder
-public class JobApplicationResponseDto {
-    private String name;
+public class JobApplicationStatusResponseDto {
+
     private ApplicationStatus status;
     private String message;
-    private Double appliedSalary;
-    private String appliedJobDescription;
 }

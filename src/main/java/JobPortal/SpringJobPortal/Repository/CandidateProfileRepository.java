@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface CandidateProfileRepository extends JpaRepository<CandidateProfile, Long> {
     Optional<CandidateProfile> findByUserUserId(Long userId);
 
+    //Optional<CandidateProfile> findByPhoneNo(String phoneNo);
+
+
 }

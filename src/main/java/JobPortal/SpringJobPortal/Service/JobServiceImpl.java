@@ -1,11 +1,14 @@
 package JobPortal.SpringJobPortal.Service;
 
+import JobPortal.SpringJobPortal.Dto.JobPatchRequestDto;
+import JobPortal.SpringJobPortal.Dto.JobPatchResponseDto;
 import JobPortal.SpringJobPortal.Dto.JobRequestDto;
 import JobPortal.SpringJobPortal.Dto.JobResponseDto;
 import JobPortal.SpringJobPortal.Entity.Company;
 import JobPortal.SpringJobPortal.Entity.Job;
 import JobPortal.SpringJobPortal.Entity.RecruiterProfile;
 import JobPortal.SpringJobPortal.Entity.User;
+import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
 import JobPortal.SpringJobPortal.Entity.type.JobStatus;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import JobPortal.SpringJobPortal.Repository.JobRepository;
@@ -18,6 +21,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,15 +41,14 @@ public class JobServiceImpl implements JobServices {
     private final JobRepository jobRepository;
     private final CurrentUserService currentUserService;
     //private final Company company;
-   // private final RecruiterProfile recruiterProfile;
+    // private final RecruiterProfile recruiterProfile;
     private final ModelMapper modelMapper;
 
     @Override
     public JobResponseDto createJob(@Valid JobRequestDto jobRequestDto) {
-        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("EMAIL: " + user.getEmail());
         System.out.println("ROLE: " + user.getRole());
-
 
 
         if (user.getRole() != RoleType.RECRUITER) throw new AccessDeniedException("Only Recruiters can create jobs");
@@ -102,18 +105,17 @@ public class JobServiceImpl implements JobServices {
     public JobResponseDto updateJob(Long id, JobRequestDto jobRequestDto) {
         System.out.println("Entered updateJob");
 
-       // User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = currentUserService.getCurrentUser();
         System.out.println("2 Auth fetched");
 
 //        User user = userRepository.findByEmail(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         //User user = userRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("user name not found"));
         System.out.println("User fetched");
-       Job job = jobRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("not found"));
+        Job job = jobRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("not found"));
 
         //Job job = jobRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Job not found"));
 //        System.out.println("Job fetched");
-
 
 
         RoleType role = user.getRole();
@@ -122,7 +124,7 @@ public class JobServiceImpl implements JobServices {
         if (role == RoleType.ADMIN) {
             //admin can update any job
         } else if (role == RoleType.RECRUITER) {
-            RecruiterProfile currentRecruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(()->new UsernameNotFoundException("User not exist"));
+            RecruiterProfile currentRecruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new UsernameNotFoundException("User not exist"));
             System.out.println(currentRecruiter.getId());
 
             System.out.println(currentRecruiter.getId());
@@ -192,6 +194,56 @@ public class JobServiceImpl implements JobServices {
         Job patched = jobRepository.save(job);
 
         return modelMapper.map(patched, JobResponseDto.class);
+
+
+    }
+
+    @Override
+    public JobPatchResponseDto patchJob(Long id, JobPatchRequestDto jobPatchRequestDto) {
+
+        User user = currentUserService.getCurrentUser();
+
+        Job job = jobRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User name not found"));
+
+        ApplicationStatus status1 = ApplicationStatus.APPLIED;
+
+//        if (status1 == ApplicationStatus.APPLIED){
+//            throw new AccessDeniedException("Candidated already applied for this job contact admin");
+//        }
+
+        RoleType role = user.getRole();
+
+        if (!(role == RoleType.ADMIN || role == RoleType.RECRUITER)) {
+
+            throw new AccessDeniedException("Unauthorized");
+
+        } else if (role == RoleType.RECRUITER || role == RoleType.ADMIN) {
+
+            if (!user.getRecruiterProfile().getId().equals(job.getRecruiter().getId())) {
+                throw new BadCredentialsException("You can update your own job");
+            }
+
+
+        }
+        else {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+        JobStatus status = job.getStatus();
+
+        if (status != JobStatus.OPEN){
+    throw new DisabledException("Job is currently not open");
+        }
+
+       job.setSalary(jobPatchRequestDto.getSalary());
+
+        Job patched = jobRepository.save(job);
+
+        return JobPatchResponseDto.builder()
+                .updatedSalary(patched.getSalary())
+                .message("Salary updated")
+                .build();
+
 
 
     }

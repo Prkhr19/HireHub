@@ -26,7 +26,7 @@ public class JobApplicationRequestDto {
     private String resumeUrl;
 
     @NotNull @Positive
-    private Long experience;
+    private Double experience;
 
     @NotBlank
     private String education;

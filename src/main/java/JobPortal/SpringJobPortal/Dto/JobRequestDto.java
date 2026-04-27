@@ -27,7 +27,7 @@ public class JobRequestDto {
     @NotNull @Positive
     private Double salary;
 
-    @NotBlank
+    @NotNull
     private String experienceRequired;
 
     @NotNull
