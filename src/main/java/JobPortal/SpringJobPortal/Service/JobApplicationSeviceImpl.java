@@ -46,13 +46,13 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
 
         validateCandidateProfile(profile);
 
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new EntityNotFoundException("Job not found with this id"));
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new BadCredentialsException("Job not found with this id"));
 
 
 
 
         if (job.getStatus() != JobStatus.OPEN) {
-            throw new IllegalStateException("This job is now closed");
+            throw new IllegalArgumentException("This job is now closed");
         }
 
         CandidateProfile candidate = candidateProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -85,7 +85,7 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
 
     private void validateCandidateProfile(CandidateProfile profile){
         if (profile.getPhoneNo() == null || profile.getResumeUrl() == null || profile.getSkills() == null || profile.getEducation() == null ){
-            throw new EntityNotFoundException("Complele your profile to start applying");
+            throw new IllegalArgumentException("Complele your profile to start applying");
         }
     }
 }

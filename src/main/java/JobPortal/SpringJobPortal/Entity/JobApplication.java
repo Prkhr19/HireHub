@@ -3,6 +3,7 @@ package JobPortal.SpringJobPortal.Entity;
 import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.action.internal.OrphanRemovalAction;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 

@@ -9,9 +9,11 @@ import JobPortal.SpringJobPortal.Repository.*;
 import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
 import JobPortal.SpringJobPortal.Service.Impl.RecruiterReviewService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,7 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
 
         User user = currentUserService.getCurrentUser();
 
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new EntityNotFoundException("Job not found"));
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new BadCredentialsException("Job not found"));
 
         RoleType role = user.getRole();
         if (!(role == RoleType.ADMIN || role == RoleType.RECRUITER)){
@@ -73,29 +75,42 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
             return response ;
     }
 
+    @Transactional
     @Override
     public JobApplicationStatusResponseDto applicantStatus(Long applicationId, JobApplicationStatusRequestDto jobApplicationStatusRequestDto) {
 
         User user = currentUserService.getCurrentUser();
 
-        JobApplication application = jobApplicationRepository.findById(applicationId).orElseThrow(()-> new EntityNotFoundException("Job application not found"));
+        JobApplication application = jobApplicationRepository.findById(applicationId).orElseThrow(()-> new BadCredentialsException("Job application not found"));
 
-        Job job = jobRepository.findById(user.getUserId()).orElseThrow(()-> new EntityNotFoundException("Job not found with this ID"));
+        Job job = application.getJob();
 
-        RecruiterProfile profile = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(()-> new UsernameNotFoundException("User name not found"));
+        RoleType role = user.getRole();
 
-//        if (! jobRepository.findByJobIdAndRercruiterId(job.getId(), profile.getId() )){
-//            throw new AccessDeniedException("Unauthorized");
-//        }
+        if (role == RoleType.ADMIN){
 
-            application.setStatus(jobApplicationStatusRequestDto.getStatus());
+        } else if (role == RoleType.RECRUITER) {
+
+            RecruiterProfile recruiter = recruiterProfileRepository.findByUserUserId(user.getRecruiterProfile().getId()).orElseThrow(()-> new UsernameNotFoundException("Recruiter not found"));
+
+            if (! job.getRecruiter().getId().equals(recruiter.getId())){
+                throw new AccessDeniedException("Unauthorized");
+
+            }
+
+        }else {
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+
+        application.setStatus(jobApplicationStatusRequestDto.getStatus());
 
 
             jobApplicationRepository.save(application);
 
             return JobApplicationStatusResponseDto.builder()
                     .status(jobApplicationStatusRequestDto.getStatus())
-                    .message("Jobapplication updated successfully")
+                    .message("Job application updated successfully")
                     .build();
 
 

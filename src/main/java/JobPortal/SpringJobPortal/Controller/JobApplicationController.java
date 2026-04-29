@@ -6,6 +6,7 @@ import JobPortal.SpringJobPortal.Dto.JobApplicationResponseDto;
 import JobPortal.SpringJobPortal.Repository.CandidateProfileRepository;
 import JobPortal.SpringJobPortal.Service.Impl.JobApplicationSevice;
 import JobPortal.SpringJobPortal.Service.JobServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,8 @@ public class JobApplicationController {
     private final JobApplicationSevice jobApplicationSevice;
 
 
-    @PostMapping("/jobs/{jobId}/apply")
+    @Operation(summary = "Apply Job")
+    @PostMapping("/candidate/jobs/{jobId}/apply")
     public ResponseEntity<JobApplicationResponseDto> applyJob(@PathVariable Long jobId) {
 
         JobApplicationResponseDto apply = jobApplicationSevice.applyJob(jobId);

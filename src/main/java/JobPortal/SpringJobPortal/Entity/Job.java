@@ -1,6 +1,7 @@
 package JobPortal.SpringJobPortal.Entity;
 
 import JobPortal.SpringJobPortal.Entity.type.JobStatus;
+import JobPortal.SpringJobPortal.Entity.type.Jobtype;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -41,7 +42,8 @@ public class Job {
     private String experienceRequired;
 
     @Column(nullable = false)
-    private String jobType;
+    @Enumerated(EnumType.STRING)
+    private Jobtype jobType;
 
     @Column(updatable = false)
     @CreationTimestamp
@@ -50,8 +52,8 @@ public class Job {
     @Enumerated(EnumType.STRING)
     private JobStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
     @ManyToOne

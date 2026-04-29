@@ -2,6 +2,7 @@ package JobPortal.SpringJobPortal.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -10,11 +11,12 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SavedJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "candidateId")

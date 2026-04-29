@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/jobs")
+@RequestMapping("/recruiter")
 public class RecruiterReviewController {
     private final RecruiterReviewService recruiterReviewService;
 
@@ -24,7 +24,7 @@ public class RecruiterReviewController {
     }
 
     @PatchMapping("/{applicationId}/status")
-    public ResponseEntity<JobApplicationStatusResponseDto>status(@PathVariable Long applicationId, @RequestBody JobApplicationStatusRequestDto jobApplicationStatusRequestDto){
+    public ResponseEntity<JobApplicationStatusResponseDto> statusUpdate(@PathVariable Long applicationId, @RequestBody JobApplicationStatusRequestDto jobApplicationStatusRequestDto){
         JobApplicationStatusResponseDto response = recruiterReviewService.applicantStatus(applicationId, jobApplicationStatusRequestDto);
 
         return ResponseEntity.ok(response);

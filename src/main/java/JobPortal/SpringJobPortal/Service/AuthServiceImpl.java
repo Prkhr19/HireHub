@@ -3,6 +3,7 @@ package JobPortal.SpringJobPortal.Service;
 import JobPortal.SpringJobPortal.Dto.AuthResponseDto;
 import JobPortal.SpringJobPortal.Dto.LoginRequestDto;
 import JobPortal.SpringJobPortal.Dto.SignUpRequestDto;
+import JobPortal.SpringJobPortal.Dto.SignupResponseDto;
 import JobPortal.SpringJobPortal.Entity.CandidateProfile;
 import JobPortal.SpringJobPortal.Entity.RecruiterProfile;
 import JobPortal.SpringJobPortal.Entity.User;
@@ -14,6 +15,7 @@ import JobPortal.SpringJobPortal.Security.JwtService;
 import JobPortal.SpringJobPortal.Service.Impl.AuthServices;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -33,10 +35,10 @@ public class AuthServiceImpl implements AuthServices {
 
 
     @Override
-    public AuthResponseDto signup(SignUpRequestDto signUpRequestDto) {
+    public SignupResponseDto signup(SignUpRequestDto signUpRequestDto) {
 
         if (userRepository.existsByEmail(signUpRequestDto.getEmail())) {
-            throw new BadCredentialsException("User with this email already exists.");
+            throw new IllegalArgumentException("User with this email already exists.");
         }
 
         User user = User.builder()
@@ -71,10 +73,9 @@ public class AuthServiceImpl implements AuthServices {
         }
 
 
-        return AuthResponseDto.builder()
-                .token(null)
+        return SignupResponseDto.builder()
                 .message("User registered successfully")
-                .role(savedUser.getRole().name())
+                .role(savedUser.getRole())
                 .build();
     }
 

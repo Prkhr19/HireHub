@@ -33,4 +33,6 @@ public class JobRequestDto {
     @NotNull
     private Jobtype jobType;
 
+
+
 }

@@ -1,10 +1,10 @@
 package JobPortal.SpringJobPortal.Service.Impl;
 
-import JobPortal.SpringJobPortal.Dto.JobPatchRequestDto;
-import JobPortal.SpringJobPortal.Dto.JobPatchResponseDto;
-import JobPortal.SpringJobPortal.Dto.JobRequestDto;
-import JobPortal.SpringJobPortal.Dto.JobResponseDto;
+import JobPortal.SpringJobPortal.Dto.*;
 import jakarta.validation.Valid;
+import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Page;
+
 
 import java.util.List;
 
@@ -17,9 +17,12 @@ public interface JobServices {
 
     JobResponseDto updateJob(Long id, JobRequestDto jobRequestDto);
 
-    JobResponseDto closeJob(Long id);
+    JobStatusResponseDto updateJobStatus(Long id, JobStatusRequestDto jobStatusRequestDto);
 
     JobPatchResponseDto patchJob(Long id, JobPatchRequestDto jobPatchRequestDto);
 
+    Page<JobSearchResponseDto> searchJobs(JobSearchRequestDto jobSearchRequestDto);
 
+
+     public String saveJob(Long jobId);
 }

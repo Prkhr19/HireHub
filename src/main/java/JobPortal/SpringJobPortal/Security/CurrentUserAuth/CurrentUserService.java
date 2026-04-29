@@ -17,7 +17,7 @@ public class CurrentUserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getPrincipal() == null) {
-            throw new RuntimeException("No authorized user found");
+            throw new IllegalArgumentException("No authorized user found");
 
         }
         Object principal =
@@ -34,7 +34,7 @@ public class CurrentUserService {
                             new UsernameNotFoundException(
                                     "User not found"));
         }
-        throw new RuntimeException(
+        throw new IllegalArgumentException(
                 "Unsupported principal type");
 
     }
