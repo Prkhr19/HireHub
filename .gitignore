@@ -30,7 +30,6 @@ build/
 !**/src/test/**/build/
 
 
-src/main/resources/application.properties
 src/main/resources/applicationproperties.yml
 
 ### VS Code ###
