@@ -2,7 +2,6 @@ package JobPortal.SpringJobPortal.Service.Impl;
 
 import JobPortal.SpringJobPortal.Dto.*;
 import jakarta.validation.Valid;
-import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 
 
