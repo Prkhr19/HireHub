@@ -29,7 +29,8 @@ public class SpringWebSecurity {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
 
-                .authorizeHttpRequests(auth -> auth.requestMatchers( "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api/v1/v3/api-docs/**", "/api/v1/swagger-ui/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.GET, "/**").permitAll()
+
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers( "/jobs/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
