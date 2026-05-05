@@ -31,11 +31,9 @@ public class SpringWebSecurity {
 
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
                         .requestMatchers( "/jobs/**").permitAll()
-                        .requestMatchers( "/api/v1/swagger-ui/**", "/api/v1/v3/api-docs/**", "/api/v1/swagger-ui.html").permitAll()
+                        .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/recruiter/**").hasRole("RECRUITER")
-                        .requestMatchers("/recruiter/**").hasRole("ADMIN")
-
+                        .requestMatchers("/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/candidate/**").hasRole("CANDIDATE")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
