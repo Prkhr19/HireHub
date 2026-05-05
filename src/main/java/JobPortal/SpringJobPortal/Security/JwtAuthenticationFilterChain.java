@@ -32,15 +32,6 @@ public class JwtAuthenticationFilterChain extends OncePerRequestFilter {
 
         String servletPath = request.getServletPath();
 
-        if (servletPath.contains("/v3/api-docs") ||
-                servletPath.contains("/swagger-ui") ||
-                servletPath.contains("swagger")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-        System.out.println("PATH: " + request.getRequestURI());
-
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -71,6 +62,14 @@ public class JwtAuthenticationFilterChain extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
 
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        return path.contains("/v3/api-docs")
+                || path.contains("/swagger-ui")
+                || path.contains("/swagger-ui.html");
     }
 
 
