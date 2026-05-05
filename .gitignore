@@ -29,8 +29,5 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-
-src/main/resources/applicationproperties.yml
-
 ### VS Code ###
 .vscode/

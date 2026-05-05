@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: Hire_Hub
-    env: java
-    buildCommand: ./mvnw clean install
-    startCommand: java -jar target/*.jar
