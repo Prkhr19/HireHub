@@ -31,14 +31,11 @@ public class JwtAuthenticationFilterChain extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        if (path.startsWith("/api/v1/swagger-ui") ||
-                path.startsWith("/api/v1/v3/api-docs") ||
-                path.contains("swagger") ||
-                path.contains("api-docs")) {
-
+        if (path.contains("swagger-ui") || path.contains("v3/api-docs")) {
             filterChain.doFilter(request, response);
             return;
         }
+        System.out.println("PATH: " + request.getRequestURI());
 
         String authHeader = request.getHeader("Authorization");
 
