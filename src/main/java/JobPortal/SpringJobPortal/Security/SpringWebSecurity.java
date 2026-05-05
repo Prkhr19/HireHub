@@ -36,8 +36,8 @@ public class SpringWebSecurity {
                         .requestMatchers("/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/candidate/**").hasRole("CANDIDATE")
                         .anyRequest().authenticated())
-                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                        .addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        //.addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
