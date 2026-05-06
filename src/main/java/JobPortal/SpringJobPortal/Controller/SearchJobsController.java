@@ -27,15 +27,15 @@ public class SearchJobsController {
 
     @Operation(summary = "Get All jobs")
     @GetMapping("/jobs")
-    public ResponseEntity<List<JobResponseDto>> getAllJobs() {
-        List<JobResponseDto> response = jobService.getAllJobs();
+    public ResponseEntity<List<JobSearchResponseDto>> getAllJobs() {
+        List<JobSearchResponseDto> response = jobService.getAllJobs();
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get jobs by id")
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<JobResponseDto> getJobById(@PathVariable Long id) {
-        JobResponseDto response = jobService.getJobById(id);
+    public ResponseEntity<JobSearchResponseDto> getJobById(@PathVariable Long id) {
+        JobSearchResponseDto response = jobService.getJobById(id);
         return ResponseEntity.ok(response);
     }
 }

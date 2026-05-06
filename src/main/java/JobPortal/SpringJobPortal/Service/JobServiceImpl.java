@@ -96,19 +96,19 @@ public class JobServiceImpl implements JobServices {
     }
 
     @Override
-    public List<JobResponseDto> getAllJobs() {
+    public List<JobSearchResponseDto> getAllJobs() {
         List<Job> jobs = jobRepository.findByStatus(JobStatus.OPEN);
-        return jobs.stream().map(job -> modelMapper.map(job, JobResponseDto.class)).toList();
+        return jobs.stream().map(job -> modelMapper.map(job, JobSearchResponseDto.class)).toList();
     }
 
     @Override
-    public JobResponseDto getJobById(Long id) {
+    public JobSearchResponseDto getJobById(Long id) {
         Job job = jobRepository.findById(id).orElseThrow(() -> new BadCredentialsException("Job not found"));
         if (job.getStatus() == JobStatus.CLOSED || job.getStatus() == JobStatus.PAUSED) {
             throw new DisabledException("Not Currently open for hiring");
         }
 
-        return modelMapper.map(job, JobResponseDto.class);
+        return modelMapper.map(job, JobSearchResponseDto.class);
     }
 
     @Transactional

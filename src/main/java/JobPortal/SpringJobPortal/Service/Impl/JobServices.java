@@ -10,9 +10,9 @@ import java.util.List;
 public interface JobServices {
     public JobResponseDto createJob(@Valid JobRequestDto jobRequestDto);
 
-    List<JobResponseDto> getAllJobs();
+    List<JobSearchResponseDto> getAllJobs();
 
-    JobResponseDto getJobById(Long id);
+    JobSearchResponseDto getJobById(Long id);
 
     JobResponseDto updateJob(Long id, JobRequestDto jobRequestDto);
 
