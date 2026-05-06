@@ -79,12 +79,7 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "search job filter")
-    @PostMapping("/jobs/search/filter")
-    public ResponseEntity<Page<JobSearchResponseDto>> searchJobFilter(@RequestBody JobSearchRequestDto jobSearchRequestDto){
-        Page<JobSearchResponseDto> response = jobService.searchJobs((jobSearchRequestDto));
-        return ResponseEntity.ok(response);
-    }
+
 
 
 
