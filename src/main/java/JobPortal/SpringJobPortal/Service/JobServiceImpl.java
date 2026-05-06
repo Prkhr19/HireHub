@@ -297,6 +297,7 @@ public class JobServiceImpl implements JobServices {
                 .postedAt(job.getPostedAt())
                 .salary(job.getSalary())
                 .jobtype(job.getJobType())
+               .location(job.getLocation())
                 .build());
 
     }
