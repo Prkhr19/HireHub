@@ -36,9 +36,9 @@ public class SpringWebSecurity {
 
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers( "/jobs/**").permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/api/v1/candidate/**").hasRole("CANDIDATE")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
+                        .requestMatchers("/candidate/**").hasRole("CANDIDATE")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);
