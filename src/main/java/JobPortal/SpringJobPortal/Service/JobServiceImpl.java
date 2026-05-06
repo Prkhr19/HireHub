@@ -49,7 +49,7 @@ public class JobServiceImpl implements JobServices {
         System.out.println("ROLE: " + user.getRole());
 
 
-        if (user.getRole() != RoleType.RECRUITER) throw new AccessDeniedException("Only Recruiters can create jobs");
+        //if (user.getRole() != RoleType.RECRUITER) throw new AccessDeniedException("Only Recruiters can create jobs");
 
         RecruiterProfile recruiterProfile =
                 recruiterProfileRepository.findByUser(user)

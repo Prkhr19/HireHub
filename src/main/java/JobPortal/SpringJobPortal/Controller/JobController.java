@@ -15,13 +15,15 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/recruiter")
+
 
 public class JobController {
     private final JobServiceImpl jobService;
     private final CompanyService companyService;
 
     @Operation(summary = "Create Job")
-    @PostMapping("/recruiter/jobs")
+    @PostMapping("/jobs")
     public ResponseEntity<JobResponseDto> createJob(@Valid @RequestBody JobRequestDto jobRequestDto) {
         System.out.println("CREATE JOB API HIT");
         JobResponseDto response = jobService.createJob(jobRequestDto);
@@ -30,7 +32,7 @@ public class JobController {
     }
 
     @Operation(summary = "Create company")
-    @PostMapping("/recruiter/company")
+    @PostMapping("/company")
     public ResponseEntity<CompanyResponseDto> createCompany(@RequestBody CompanyRequestDto companyRequestDto){
         CompanyResponseDto response = companyService.createCompany(companyRequestDto);
 
@@ -55,7 +57,7 @@ public class JobController {
     }
 
     @Operation(summary = "Update job")
-    @PutMapping("/recruiter/{id}/update")
+    @PutMapping("/{id}/update")
     public ResponseEntity<JobResponseDto> updateJob(@PathVariable Long id, @RequestBody JobRequestDto jobRequestDto){
         JobResponseDto update= jobService.updateJob(id, jobRequestDto);
 
@@ -63,7 +65,7 @@ public class JobController {
     }
 
     @Operation(summary = "Update job status")
-    @PatchMapping("/recruiter/{id}/status")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<JobStatusResponseDto> updateJobStatus(@PathVariable Long id , @RequestBody JobStatusRequestDto jobStatusRequestDto){
         JobStatusResponseDto response = jobService.updateJobStatus(id, jobStatusRequestDto);
 
@@ -71,7 +73,7 @@ public class JobController {
     }
 
     @Operation(summary = "Update salary")
-    @PatchMapping("/recruiter/{id}/updateSal")
+    @PatchMapping("/{id}/updateSal")
     public ResponseEntity<JobPatchResponseDto> updatesal(@PathVariable Long id , @RequestBody JobPatchRequestDto jobPatchRequestDto){
         JobPatchResponseDto response = jobService.patchJob(id, jobPatchRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

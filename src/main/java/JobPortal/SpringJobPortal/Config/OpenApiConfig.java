@@ -15,10 +15,7 @@ import java.util.List;
 public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenApi(){
-        Server server = new Server();
-        server.setUrl("/api/v1");
         return new OpenAPI()
-                .servers(List.of(server))
                 .info(new Info().title("Hire hub API")
                 .version("1.0")
                 .description("Backend APIs for HireHub"))
