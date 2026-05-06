@@ -33,40 +33,24 @@ public class JobController {
 
     @Operation(summary = "Create company")
     @PostMapping("/company")
-    public ResponseEntity<CompanyResponseDto> createCompany(@RequestBody CompanyRequestDto companyRequestDto){
+    public ResponseEntity<CompanyResponseDto> createCompany(@RequestBody CompanyRequestDto companyRequestDto) {
         CompanyResponseDto response = companyService.createCompany(companyRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
-    @Operation(summary = "Get All jobs")
-    @GetMapping("/jobs")
-    public ResponseEntity<List<JobResponseDto>> getAllJobs(){
-       List <JobResponseDto> response = jobService.getAllJobs();
-        return ResponseEntity.ok(response);
-    }
-
-
-
-    @Operation(summary = "Get jobs by id")
-    @GetMapping("/jobs/{id}")
-    public ResponseEntity<JobResponseDto> getJobById(@PathVariable Long id){
-        JobResponseDto response = jobService.getJobById(id);
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "Update job")
     @PutMapping("/{id}/update")
-    public ResponseEntity<JobResponseDto> updateJob(@PathVariable Long id, @RequestBody JobRequestDto jobRequestDto){
-        JobResponseDto update= jobService.updateJob(id, jobRequestDto);
+    public ResponseEntity<JobResponseDto> updateJob(@PathVariable Long id, @RequestBody JobRequestDto jobRequestDto) {
+        JobResponseDto update = jobService.updateJob(id, jobRequestDto);
 
         return ResponseEntity.ok(update);
     }
 
     @Operation(summary = "Update job status")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<JobStatusResponseDto> updateJobStatus(@PathVariable Long id , @RequestBody JobStatusRequestDto jobStatusRequestDto){
+    public ResponseEntity<JobStatusResponseDto> updateJobStatus(@PathVariable Long id, @RequestBody JobStatusRequestDto jobStatusRequestDto) {
         JobStatusResponseDto response = jobService.updateJobStatus(id, jobStatusRequestDto);
 
         return ResponseEntity.ok(response);
@@ -74,15 +58,10 @@ public class JobController {
 
     @Operation(summary = "Update salary")
     @PatchMapping("/{id}/updateSal")
-    public ResponseEntity<JobPatchResponseDto> updatesal(@PathVariable Long id , @RequestBody JobPatchRequestDto jobPatchRequestDto){
+    public ResponseEntity<JobPatchResponseDto> updatesal(@PathVariable Long id, @RequestBody JobPatchRequestDto jobPatchRequestDto) {
         JobPatchResponseDto response = jobService.patchJob(id, jobPatchRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-
-
-
-
 
 
 }
