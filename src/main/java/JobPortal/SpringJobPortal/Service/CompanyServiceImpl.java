@@ -40,7 +40,18 @@ public class CompanyServiceImpl implements CompanyService {
 
 
        if (recruiterProfile.getCompany() != null){
-           throw new IllegalArgumentException("Company already present");
+
+           Long existingCompanyId = recruiterProfile.getCompany().getId();
+           if (existingCompanyId != null && companyRepository.existsById(existingCompanyId)){
+               throw new IllegalArgumentException("Company already present");
+           }
+
+           recruiterProfile.setCompany(null);
+           recruiterProfileRepository.save(recruiterProfile);
+       }
+
+       if (companyRepository.existsByCompanyNameIgnoreCase(companyRequestDto.getCompanyName())){
+           throw new IllegalArgumentException("company already exists with this name");
        }
 
         Company company = new Company();
