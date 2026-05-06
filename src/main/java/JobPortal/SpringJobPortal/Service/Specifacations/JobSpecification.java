@@ -35,7 +35,7 @@ public class JobSpecification {
 
     public static Specification<Job>hasCompany(String company){
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("company").get("name")), "%" + company.toLowerCase() + "%");
+                criteriaBuilder.lower(root.get("company").get("companyName")), "%" + company.toLowerCase() + "%");
     }
 
 }
