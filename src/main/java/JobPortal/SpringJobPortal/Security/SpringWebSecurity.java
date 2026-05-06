@@ -29,16 +29,19 @@ public class SpringWebSecurity {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
 
-                .authorizeHttpRequests(auth -> auth.requestMatchers( "/**").permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers( "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html").permitAll()
 
-//                        .requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers( "/jobs/**").permitAll()
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
-//                        .requestMatchers(HttpMethod.PUT,"/candidate/**").hasRole("CANDIDATE")
-//                        .anyRequest().authenticated())
-                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-                        //.addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);
+
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers( "/jobs/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/candidate/**").hasRole("CANDIDATE")
+                        .anyRequest().authenticated())
+                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
