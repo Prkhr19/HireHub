@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
+
 import java.util.List;
 
 @Service
@@ -34,8 +35,7 @@ public class JobServiceImpl implements JobServices {
     private final RecruiterProfileRepository recruiterProfileRepository;
     private final JobRepository jobRepository;
     private final CurrentUserService currentUserService;
-    //private final Company company;
-    // private final RecruiterProfile recruiterProfile;
+
     private final ModelMapper modelMapper;
     private final CompanyRepository companyRepository;
     private final SavedJobRepository savedJobRepository;
@@ -45,21 +45,16 @@ public class JobServiceImpl implements JobServices {
     @Override
     public JobResponseDto createJob(@Valid JobRequestDto jobRequestDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("EMAIL: " + user.getEmail());
-        System.out.println("ROLE: " + user.getRole());
 
-
-        //if (user.getRole() != RoleType.RECRUITER) throw new AccessDeniedException("Only Recruiters can create jobs");
 
         RecruiterProfile recruiterProfile =
                 recruiterProfileRepository.findByUser(user)
                         .orElseThrow(() -> new IllegalArgumentException("Recruiter profile not found"));
         Company company = recruiterProfile.getCompany();
 
-        if (company == null){
+        if (company == null) {
             throw new IllegalArgumentException("Company cannot be null");
         }
-
 
 
         Job job = Job.builder()
@@ -77,15 +72,14 @@ public class JobServiceImpl implements JobServices {
 
         job.setCompany(company);
 
-        boolean exists = jobRepository.existsByTitleAndCompanyAndLocation(jobRequestDto.getTitle(),recruiterProfile.getCompany(), jobRequestDto.getLocation());
+        boolean exists = jobRepository.existsByTitleAndCompanyAndLocation(jobRequestDto.getTitle(), recruiterProfile.getCompany(), jobRequestDto.getLocation());
 
-        if (exists){
+        if (exists) {
             throw new IllegalArgumentException("Job already exists");
         }
         Job savedJob = jobRepository.save(job);
 
 
-        //return modelMapper.map(savedJob, JobResponseDto.class);
         return JobResponseDto.builder()
                 .message("Job created Successfully")
                 .status(savedJob.getStatus().OPEN.name())
@@ -114,33 +108,19 @@ public class JobServiceImpl implements JobServices {
     @Transactional
     @Override
     public JobResponseDto updateJob(Long id, @Valid JobRequestDto jobRequestDto) {
-        System.out.println("Entered updateJob");
 
-        // User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = currentUserService.getCurrentUser();
-        System.out.println("2 Auth fetched");
 
-//        User user = userRepository.findByEmail(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        //User user = userRepository.findByEmail(email).orElseThrow(()->new EntityNotFoundException("user name not found"));
-        System.out.println("User fetched");
         Job job = jobRepository.findById(id).orElseThrow(() -> new BadCredentialsException("not found"));
-
-        //Job job = jobRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Job not found"));
-//        System.out.println("Job fetched");
 
 
         RoleType role = user.getRole();
-        System.out.println(user.getRole());
 
         if (role == RoleType.ADMIN) {
             //admin can update any job
         } else if (role == RoleType.RECRUITER) {
             RecruiterProfile currentRecruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new BadCredentialsException("User not exist"));
-            System.out.println(currentRecruiter.getId());
 
-            System.out.println(currentRecruiter.getId());
-
-            System.out.println(job.getRecruiter().getId());
 
             if (!job.getRecruiter().getId().equals(currentRecruiter.getId()))
                 throw new DisabledException("You can update only your jobs");
@@ -150,13 +130,9 @@ public class JobServiceImpl implements JobServices {
             throw new AccessDeniedException("Unauthorized access");
         }
 
-        System.out.println(job.getStatus());
 
         if (job.getStatus() != JobStatus.OPEN) throw new IllegalArgumentException("Cannot update this job");
 
-//        RecruiterProfile recruiterProfile = user.getRecruiterProfile();
-//
-//        Company company = recruiterProfile.getCompany();
 
         job.setTitle(jobRequestDto.getTitle());
         job.setJobType(jobRequestDto.getJobType());
@@ -219,9 +195,6 @@ public class JobServiceImpl implements JobServices {
 
         ApplicationStatus status1 = ApplicationStatus.APPLIED;
 
-//        if (status1 == ApplicationStatus.APPLIED){
-//            throw new AccessDeniedException("Candidated already applied for this job contact admin");
-//        }
 
         RoleType role = user.getRole();
 
@@ -259,7 +232,7 @@ public class JobServiceImpl implements JobServices {
     @Override
     public Page<JobSearchResponseDto> searchJobs(JobSearchRequestDto jobSearchRequestDto) {
         int page = jobSearchRequestDto.getPage() > 0 ? jobSearchRequestDto.getPage() : 0;
-        int size = jobSearchRequestDto.getSize()> 0 ? jobSearchRequestDto.getSize() : 10;
+        int size = jobSearchRequestDto.getSize() > 0 ? jobSearchRequestDto.getSize() : 10;
 
         Pageable pageable = PageRequest.of(
                 page,
@@ -271,33 +244,33 @@ public class JobServiceImpl implements JobServices {
 
         spec = spec.and(JobSpecification.hasStatus(JobStatus.OPEN));
 
-        if (jobSearchRequestDto.getKeyword() != null && !jobSearchRequestDto.getKeyword().isBlank()){
+        if (jobSearchRequestDto.getKeyword() != null && !jobSearchRequestDto.getKeyword().isBlank()) {
             spec = spec.and(JobSpecification.hasKeyword(jobSearchRequestDto.getKeyword()));
         }
 
-        if (jobSearchRequestDto.getJobType() != null ){
+        if (jobSearchRequestDto.getJobType() != null) {
             spec = spec.and((JobSpecification.hasJobType(jobSearchRequestDto.getJobType())));
         }
 
-        if ( jobSearchRequestDto.getCompany() != null &&  ! jobSearchRequestDto.getCompany().isBlank()){
+        if (jobSearchRequestDto.getCompany() != null && !jobSearchRequestDto.getCompany().isBlank()) {
             spec = spec.and(JobSpecification.hasCompany(jobSearchRequestDto.getCompany()));
 
         }
 
-        if (jobSearchRequestDto.getLocation() != null && !jobSearchRequestDto.getLocation().isBlank()){
+        if (jobSearchRequestDto.getLocation() != null && !jobSearchRequestDto.getLocation().isBlank()) {
             spec = spec.and(JobSpecification.hasLocation(jobSearchRequestDto.getLocation()));
         }
 
         Page<Job> jobPage = jobRepository.findAll(spec, pageable);
 
-       return jobPage.map(job -> JobSearchResponseDto.builder()
+        return jobPage.map(job -> JobSearchResponseDto.builder()
                 .id(job.getId())
                 .title(job.getTitle())
                 .companyName(job.getCompany().getCompanyName())
                 .postedAt(job.getPostedAt())
                 .salary(job.getSalary())
                 .jobtype(job.getJobType())
-               .location(job.getLocation())
+                .location(job.getLocation())
                 .build());
 
     }
@@ -310,12 +283,12 @@ public class JobServiceImpl implements JobServices {
 
         RoleType role = user.getRole();
 
-        CandidateProfile candidate = candidateProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(()-> new BadCredentialsException("User not found"));
+        CandidateProfile candidate = candidateProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new BadCredentialsException("User not found"));
 
-        Job job = jobRepository.findById(jobId).orElseThrow(()-> new IllegalArgumentException("Job not found"));
-        boolean exists = savedJobRepository.existsByCandidatesAndJob(candidate, job );
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new IllegalArgumentException("Job not found"));
+        boolean exists = savedJobRepository.existsByCandidatesAndJob(candidate, job);
 
-        if (exists){
+        if (exists) {
             throw new IllegalArgumentException("Job already saved");
         }
 

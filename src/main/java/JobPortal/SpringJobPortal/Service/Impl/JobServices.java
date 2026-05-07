@@ -23,5 +23,5 @@ public interface JobServices {
     Page<JobSearchResponseDto> searchJobs(JobSearchRequestDto jobSearchRequestDto);
 
 
-     public String saveJob(Long jobId);
+    public String saveJob(Long jobId);
 }

@@ -29,11 +29,10 @@ public class Company {
     private String discription;
 
     @OneToMany(mappedBy = "company")
-    private List<RecruiterProfile>recruiters;
+    private List<RecruiterProfile> recruiters;
 
     @OneToMany(mappedBy = "company")
-    private List<Job>jobs;
-
+    private List<Job> jobs;
 
 
 }

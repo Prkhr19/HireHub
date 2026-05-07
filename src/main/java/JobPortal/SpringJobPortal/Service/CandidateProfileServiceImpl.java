@@ -62,7 +62,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
         User user = currentUserService.getCurrentUser();
 
-        //JobApplication application = jobApplicationRepository.findById(applicationId).orElseThrow(() -> new UsernameNotFoundException("User name not found"));
         RoleType roles = user.getRole();
 
         if (roles != RoleType.CANDIDATE) {

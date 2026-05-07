@@ -25,7 +25,6 @@ public class JobController {
     @Operation(summary = "Create Job")
     @PostMapping("/jobs")
     public ResponseEntity<JobResponseDto> createJob(@Valid @RequestBody JobRequestDto jobRequestDto) {
-        System.out.println("CREATE JOB API HIT");
         JobResponseDto response = jobService.createJob(jobRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

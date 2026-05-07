@@ -49,8 +49,6 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new BadCredentialsException("Job not found with this id"));
 
 
-
-
         if (job.getStatus() != JobStatus.OPEN) {
             throw new IllegalArgumentException("This job is now closed");
         }
@@ -70,7 +68,6 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
         application.setStatus(ApplicationStatus.APPLIED);
 
         jobApplicationRepository.save(application);
-        System.out.println("before save");
 
         return JobApplicationResponseDto.builder()
                 .message("Applied Successfully")
@@ -83,8 +80,8 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
 
     }
 
-    private void validateCandidateProfile(CandidateProfile profile){
-        if (profile.getPhoneNo() == null || profile.getResumeUrl() == null || profile.getSkills() == null || profile.getEducation() == null ){
+    private void validateCandidateProfile(CandidateProfile profile) {
+        if (profile.getPhoneNo() == null || profile.getResumeUrl() == null || profile.getSkills() == null || profile.getEducation() == null) {
             throw new IllegalArgumentException("Complele your profile to start applying");
         }
     }

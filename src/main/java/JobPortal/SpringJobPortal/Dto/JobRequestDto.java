@@ -24,7 +24,8 @@ public class JobRequestDto {
     @NotBlank
     private String location;
 
-    @NotNull @Positive
+    @NotNull
+    @Positive
     private Double salary;
 
     @NotNull
@@ -32,7 +33,6 @@ public class JobRequestDto {
 
     @NotNull
     private Jobtype jobType;
-
 
 
 }

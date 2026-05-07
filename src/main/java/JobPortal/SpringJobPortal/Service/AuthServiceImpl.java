@@ -58,7 +58,6 @@ public class AuthServiceImpl implements AuthServices {
             recruiterProfile.setDesignation("Recruiter");
             recruiterProfile.setUser(savedUser);
 
-            //recruiterProfile.setCompany(null);   // can assign later
             recruiterProfileRepository.save(recruiterProfile);
 
         }

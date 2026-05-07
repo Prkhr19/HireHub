@@ -51,8 +51,6 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
                 throw new AccessDeniedException("You can only view your own job applications");
             }
         }
-        System.out.println("User id: "+ user.getUserId());
-       // CandidateProfile profile = userRepository.findById(user.getUserId()).orElseThrow(()-> new EntityNotFoundException("Candidate not found with Id")).getCandidateProfile();
 
 
 
