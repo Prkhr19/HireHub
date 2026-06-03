@@ -25,6 +25,7 @@ public class SpringWebSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
                 .addFilterBefore(jwtAuthenticationFilterChain, UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
