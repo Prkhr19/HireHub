@@ -24,7 +24,7 @@ public class RecruiterReviewResponseDto {
 
     private String resumeUrl;
 
-    private Double experience;
+    private String experience;
 
     private String education;
 
