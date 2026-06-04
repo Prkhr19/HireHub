@@ -21,10 +21,10 @@ public class CandidateProfileController {
 
     @Operation(summary = "Candidate update Profile before applying")
     @PutMapping("/profile")
-    public ResponseEntity<CandidateProfileReqDto> updateProfile(@RequestBody CandidateProfileReqDto candidateProfileReqDto){
+    public ResponseEntity<String> updateProfile(@RequestBody CandidateProfileReqDto candidateProfileReqDto){
 
 
-        return ResponseEntity.ok(candidateProfileService.updateProfile(candidateProfileReqDto));
+        return ResponseEntity.ok("Profile updated successfully");
     }
 
     @Operation(summary = "Applied Application")
