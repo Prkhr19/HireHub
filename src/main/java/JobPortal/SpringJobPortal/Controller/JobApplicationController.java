@@ -28,9 +28,6 @@ public class JobApplicationController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apply);
     }
-    @GetMapping("/")
-    public String home(){
-        return "HireHub Backend API is running";
-    }
+
 
 }

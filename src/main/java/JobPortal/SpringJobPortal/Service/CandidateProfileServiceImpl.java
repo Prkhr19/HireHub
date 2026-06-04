@@ -52,8 +52,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .experience(candidateProfile.getExperience())
                 .skills(candidateProfile.getSkills())
                 .education(candidateProfile.getEducation())
-                .meessage("Profile Updated Successfully")
-                .id(candidateProfile.getId())
                 .build();
     }
 

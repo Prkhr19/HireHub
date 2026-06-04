@@ -14,12 +14,12 @@ import lombok.*;
 @Setter
 public class CandidateProfileReqDto {
 
-    private Long id;
 
     @NotBlank
     private String name;
 
-    @NotBlank @Size(max = 10)
+    @NotBlank
+    @Size(max = 10)
     private String phoneNo;
 
     @NotBlank
@@ -30,7 +30,7 @@ public class CandidateProfileReqDto {
 
     @NotNull
     @Positive
-    private Double experience;
+    private String experience;
 
     @NotBlank
     private String education;
@@ -38,6 +38,5 @@ public class CandidateProfileReqDto {
     @NotBlank
     private String location;
 
-    private String meessage;
 
 }

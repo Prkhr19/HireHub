@@ -28,7 +28,7 @@ public class CandidateProfile {
     private String resumeUrl;
 
     @Column
-    private Double experience;
+    private String experience;
 
     @Column
     private String Education;
