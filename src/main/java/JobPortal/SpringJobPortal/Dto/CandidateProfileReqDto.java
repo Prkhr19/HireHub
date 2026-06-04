@@ -28,7 +28,7 @@ public class CandidateProfileReqDto {
     @NotBlank
     private String resumeUrl;
 
-    @NotNull
+    @NotBlank
     @Positive
     private String experience;
 
