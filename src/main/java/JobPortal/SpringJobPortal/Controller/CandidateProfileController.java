@@ -6,6 +6,7 @@ import JobPortal.SpringJobPortal.Service.Impl.CandidateProfileService;
 import JobPortal.SpringJobPortal.Service.Impl.JobServices;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,9 @@ public class CandidateProfileController {
 
     @Operation(summary = "Candidate update Profile before applying")
     @PutMapping("/profile")
-    public ResponseEntity<String> updateProfile(@RequestBody CandidateProfileReqDto candidateProfileReqDto){
-
-
-        return ResponseEntity.ok("Profile updated successfully");
+    public ResponseEntity<CandidateProfileReqDto> updateProfile(@RequestBody CandidateProfileReqDto candidateProfileReqDto){
+        CandidateProfileReqDto updateProfile =  candidateProfileService.updateProfile(candidateProfileReqDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateProfile);
     }
 
     @Operation(summary = "Applied Application")
