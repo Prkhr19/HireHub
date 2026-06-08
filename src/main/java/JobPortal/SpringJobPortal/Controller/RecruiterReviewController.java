@@ -3,6 +3,7 @@ package JobPortal.SpringJobPortal.Controller;
 import JobPortal.SpringJobPortal.Dto.JobApplicationStatusRequestDto;
 import JobPortal.SpringJobPortal.Dto.JobApplicationStatusResponseDto;
 import JobPortal.SpringJobPortal.Dto.RecruiterReviewResponseDto;
+import JobPortal.SpringJobPortal.Dto.RecruiterViewJobDTO;
 import JobPortal.SpringJobPortal.Service.Impl.RecruiterReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,4 +32,10 @@ public class RecruiterReviewController {
 
     }
 
+    @GetMapping("/myJobs")
+    public ResponseEntity<List<RecruiterViewJobDTO>> getMyJobs(){
+        List<RecruiterViewJobDTO> response = recruiterReviewService.viewMyJob();
+
+        return ResponseEntity.ok(response);
+    }
 }

@@ -3,6 +3,7 @@ package JobPortal.SpringJobPortal.Service;
 import JobPortal.SpringJobPortal.Dto.JobApplicationStatusRequestDto;
 import JobPortal.SpringJobPortal.Dto.JobApplicationStatusResponseDto;
 import JobPortal.SpringJobPortal.Dto.RecruiterReviewResponseDto;
+import JobPortal.SpringJobPortal.Dto.RecruiterViewJobDTO;
 import JobPortal.SpringJobPortal.Entity.*;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import JobPortal.SpringJobPortal.Repository.*;
@@ -112,5 +113,31 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
                     .build();
 
 
+    }
+
+    @Override
+    public List<RecruiterViewJobDTO> viewMyJob() {
+        User user = currentUserService.getCurrentUser();
+
+        RoleType roles = user.getRole();
+
+        if (roles != RoleType.RECRUITER){
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+        RecruiterProfile recruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(()-> new BadCredentialsException("No user found"));
+
+        List<Job> jobs = jobRepository.findByRecruiter_Id(recruiter.getId());
+
+
+
+
+        List<RecruiterViewJobDTO> response = jobs.stream().map(job ->RecruiterViewJobDTO.builder()
+                .id(job.getId().toString())
+                .title(job.getTitle())
+                .status(job.getStatus())
+                .build()).toList();
+
+        return response;
     }
 }
