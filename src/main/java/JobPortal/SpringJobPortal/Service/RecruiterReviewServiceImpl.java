@@ -136,6 +136,8 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
                 .id(job.getId().toString())
                 .title(job.getTitle())
                 .status(job.getStatus())
+                .location(job.getLocation())
+                .salary(job.getSalary().toString())
                 .build()).toList();
 
         return response;

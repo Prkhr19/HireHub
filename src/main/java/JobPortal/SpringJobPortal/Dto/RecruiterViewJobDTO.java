@@ -14,4 +14,6 @@ public class RecruiterViewJobDTO {
     private String id;
     private JobStatus status;
     private String title;
+    private String location;
+    private String salary;
 }
