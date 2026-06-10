@@ -86,19 +86,25 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
 
         RoleType role = user.getRole();
 
+
         if (role == RoleType.ADMIN){
 
         } else if (role == RoleType.RECRUITER) {
 
             RecruiterProfile recruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(()-> new UsernameNotFoundException("Recruiter not found"));
 
+            System.out.println("Current User: " + user.getEmail());
+            System.out.println("Role: " + user.getRole());
+            System.out.println("Recruiter ID: " + recruiter.getId());
+            System.out.println("Job Recruiter ID: " + job.getRecruiter().getId());
+
             if (! job.getRecruiter().getId().equals(recruiter.getId())){
-                throw new AccessDeniedException("Unauthorized");
+                throw new RuntimeException("Unauthorized");
 
             }
 
         }else {
-            throw new AccessDeniedException("Unauthorized");
+            throw new RuntimeException("Unauthorized");
         }
 
 
