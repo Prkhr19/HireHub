@@ -97,8 +97,6 @@ public class RecruiterReviewServiceImpl implements RecruiterReviewService {
 
             }
 
-        }else {
-            throw new AccessDeniedException("Unauthorized");
         }
 
 
