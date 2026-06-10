@@ -17,14 +17,14 @@ import java.util.List;
 public class RecruiterReviewController {
     private final RecruiterReviewService recruiterReviewService;
 
-    @GetMapping("/{jobId}/applications")
+    @GetMapping("/job/{jobId}/applications")
     public ResponseEntity<List<RecruiterReviewResponseDto>> getJobApplication(@PathVariable Long jobId){
         List<RecruiterReviewResponseDto> response = recruiterReviewService.getJobApplication(jobId);
 
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{applicationId}/status")
+    @PatchMapping("/application/{applicationId}/status")
     public ResponseEntity<JobApplicationStatusResponseDto> statusUpdate(@PathVariable Long applicationId, @RequestBody JobApplicationStatusRequestDto jobApplicationStatusRequestDto){
         JobApplicationStatusResponseDto response = recruiterReviewService.applicantStatus(applicationId, jobApplicationStatusRequestDto);
 
