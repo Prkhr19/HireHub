@@ -18,7 +18,7 @@ public class CorsConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173",
-                "https://hire-hub-frontend-mu.vercel.app/"
+                "https://hire-hub-frontend-mu.vercel.app"
 
         ));
 
