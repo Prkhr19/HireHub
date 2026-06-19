@@ -35,4 +35,5 @@ public class Company {
     private List<Job> jobs;
 
 
+
 }
